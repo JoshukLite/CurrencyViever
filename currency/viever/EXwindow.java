@@ -18,7 +18,6 @@ public class EXwindow {
 	// Key = bank name, Value = array(first item - buy price,
 	// second item - sell price):
 	private HashMap<String, String[]> allValues = null;
-	private float tempCur = 0f;
 	private ReadURL readURLcom = new ReadURL("https://www.rbc.ua/rus/currency/USD");
 	private ReadURL readURLoff = new ReadURL("http://minfin.com.ua/currency/nbu/");
 	private ValuesLoader vLoader = new ValuesLoader(readURLoff, readURLcom);
@@ -134,6 +133,10 @@ public class EXwindow {
 				}	else if(i.equals("EUR")) {
 					errors.setText("");
 					allValues = vLoader.loadEURvalues();
+					display();
+				}	else if(i.equals("PLN")) {
+					errors.setText("");
+					allValues = vLoader.loadPLNvalues();
 					display();
 				}
 			}	catch(UnknownHostException uhe) {
