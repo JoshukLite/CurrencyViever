@@ -4,6 +4,20 @@
 	<property name="build.dir" value="build"/>
 	<property name="name" value="viever"/>
 
+	<target name="usage">
+		<echo message=""/>
+		<echo message="${name} build file"/>
+		<echo message="---------------------------"/>
+		<echo message=""/>
+		<echo message="Available targets are:"/>
+		<echo message=""/>
+		<echo message="build      ---> compile all source code in 'build' dir"/>
+		<echo message="jar        ---> creates executable jar file"/>
+		<echo message="run        ---> run application"/>
+		<echo message="clean      ---> delete 'build' dir"/>
+		<echo message=""/>
+	</target>
+
 	<target name="build" description="Compile source java files">
 		<mkdir dir="${build.dir}/classes"/>
 		<javac destdir="${build.dir}/classes" includeantruntime="false">
