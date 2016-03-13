@@ -1,0 +1,27 @@
+<?mxl version="1.0"?>
+<project name="viever" basedir="." default="build">
+	<property name="src.dir" value="src"/>
+	<property name="build.dir" value="build"/>
+	<property name="name" value="viever"/>
+
+	<target name="build" description="Compile source java files">
+		<mkdir dir="${build.dir}/classes"/>
+		<javac destdir="${build.dir}/classes" includeantruntime="false">
+			<src path="${src.dir}/main/java"/>
+		</javac>
+	</target>
+
+	<target name="jar" description="Creates executable jar file">
+		<mkdir dir="${build.dir}/jar"/>
+		<jar destfile="${build.dir}/jar/Viever.jar" basedir="${build.dir}/classes" manifest="META-INF/Manifest.mf"/>
+	</target>
+
+	<target name="run" description="Run application">
+		<java jar="${build.dir}/jar/Viever.jar" fork="true"/>
+	</target>
+	
+	<target name="clean" description="Clean output directories">
+		<delete dir="${build.dir}"/>
+	</target>
+
+</project>
