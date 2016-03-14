@@ -25,13 +25,13 @@
 		</javac>
 	</target>
 
-	<target name="jar" description="Creates executable jar file">
+	<target name="jar" depends="build" description="Creates executable jar file">
 		<mkdir dir="${build.dir}/jar"/>
 		<jar destfile="${build.dir}/jar/Viever.jar" basedir="${build.dir}/classes" manifest="META-INF/Manifest.mf"/>
 	</target>
 
-	<target name="run" description="Run application">
-		<java jar="${build.dir}/jar/Viever.jar" fork="true"/>
+	<target name="run" depends="build" description="Run application">
+		<java fork="true" failonerror="yes" classpath="${build.dir}/classes/" classname="currency.viever.Open"/>
 	</target>
 	
 	<target name="clean" description="Clean output directories">
