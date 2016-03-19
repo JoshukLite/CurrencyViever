@@ -1,13 +1,15 @@
 package currency.viever;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.plaf.basic.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.plaf.basic.*;
 
 public class EXwindow {
+	private ExecutorService exec = Executors.newSingleThreadExecutor();
 	private String[] bankNames = {
 		"NBU", "VTB Bank", "OTP Bank", "Prominvestbank",
 		"UniCredit Bank", "PrivatBank", "Oschadbank"
@@ -91,33 +93,39 @@ public class EXwindow {
 				return;
 			}
 			String item = (String)cb.getSelectedItem();
-			try {
-				if(item.equals("USD")) {
-					errors.setText("");
-					toCurrButton.setText("To USD");
-					readURLoff.setDestUrl("http://minfin.com.ua/currency/nbu/");
-					readURLcom.setDestUrl("https://www.rbc.ua/rus/currency/USD");
-					loadUSDvalues();
-					display();
-				} 	else if(item.equals("EUR")) {
-					errors.setText("");
-					toCurrButton.setText("To EUR");
-					readURLoff.setDestUrl("http://minfin.com.ua/currency/nbu/");
-					readURLcom.setDestUrl("https://www.rbc.ua/rus/currency/EUR");
-					loadEURvalues();
-					display();
-				}	else if(item.equals("PLN")) {
-					errors.setText("");
-					toCurrButton.setText("To PLN");
-					readURLoff.setDestUrl("http://minfin.com.ua/currency/nbu/");
-					readURLcom.setDestUrl("http://minfin.com.ua/currency/banks/pln/");
-					loadPLNvalues();
-					display();
-				}
-			}	catch(UnknownHostException uhe) {
-				errors.setText("Unnable to connect to website, try again later");
-			}	catch(NoRouteToHostException nrthe) {
-				errors.setText("Unnable to connect to website, try again later");
+			if(item.equals("USD")) {
+				errors.setText("");
+				toCurrButton.setText("To USD");
+				readURLoff.setDestUrl("http://minfin.com.ua/currency/nbu/");
+				readURLcom.setDestUrl("https://www.rbc.ua/rus/currency/USD");
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						loadUSDvalues();
+					}
+				});
+			} 	else if(item.equals("EUR")) {
+				errors.setText("");
+				toCurrButton.setText("To EUR");
+				readURLoff.setDestUrl("http://minfin.com.ua/currency/nbu/");
+				readURLcom.setDestUrl("https://www.rbc.ua/rus/currency/EUR");
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						loadEURvalues();
+					}
+				});
+			}	else if(item.equals("PLN")) {
+				errors.setText("");
+				toCurrButton.setText("To PLN");
+				readURLoff.setDestUrl("http://minfin.com.ua/currency/nbu/");
+				readURLcom.setDestUrl("http://minfin.com.ua/currency/banks/pln/");
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						loadPLNvalues();
+					}
+				});
 			}
 		}
 	};
@@ -214,83 +222,101 @@ public class EXwindow {
 		oscBuy.setText(allValues.get("Oschadbank")[0]);
 		oscSell.setText(allValues.get("Oschadbank")[1]);
 	}
-	private void loadUSDvalues() throws 
-	UnknownHostException, NoRouteToHostException {
+	private synchronized void loadUSDvalues() {
 		allValues.clear();
-		allValues.put("NBU", readURLoff.getCurrentXR(
-			"<a href=\"/currency/nbu/usd/\">ДОЛЛАР</a>",
-			"<a href=\"/currency/nbu/eur/\">ЕВРО</a>", 
-			"<td.*?>\\s*?(.*?)<"));
-		allValues.put("VTB Bank", readURLcom.getCurrentXR(
-			"<td>ВТБ Банк</td>", "</tr>",
-			"<td>ВТБ Банк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("OTP Bank", readURLcom.getCurrentXR(
-			"<td>OTP Bank</td>", "</tr>",
-			"<td>OTP Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("Prominvestbank", readURLcom.getCurrentXR(
-			"<td>Проминвестбанк</td>", "</tr>",
-			"<td>Проминвестбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
-			"<td>UniCredit Bank</td>", "</tr>",
-			"<td>UniCredit Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("PrivatBank", readURLcom.getCurrentXR(
-			"<td>Приватбанк</td>", "</tr>",
-			"<td>Приватбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("Oschadbank", readURLcom.getCurrentXR(
-			"<td>Ощадбанк</td>", "</tr>",
-			"<td>Ощадбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		readURLcom.releaseHTML();
-		readURLoff.releaseHTML();
+		try {
+			allValues.put("NBU", readURLoff.getCurrentXR(
+				"<a href=\"/currency/nbu/usd/\">ДОЛЛАР</a>",
+				"<a href=\"/currency/nbu/eur/\">ЕВРО</a>", 
+				"<td.*?>\\s*?(.*?)<"));
+			allValues.put("VTB Bank", readURLcom.getCurrentXR(
+				"<td>ВТБ Банк</td>", "</tr>",
+				"<td>ВТБ Банк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("OTP Bank", readURLcom.getCurrentXR(
+				"<td>OTP Bank</td>", "</tr>",
+				"<td>OTP Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("Prominvestbank", readURLcom.getCurrentXR(
+				"<td>Проминвестбанк</td>", "</tr>",
+				"<td>Проминвестбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
+				"<td>UniCredit Bank</td>", "</tr>",
+				"<td>UniCredit Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("PrivatBank", readURLcom.getCurrentXR(
+				"<td>Приватбанк</td>", "</tr>",
+				"<td>Приватбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("Oschadbank", readURLcom.getCurrentXR(
+				"<td>Ощадбанк</td>", "</tr>",
+				"<td>Ощадбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			display();
+			readURLcom.releaseHTML();
+			readURLoff.releaseHTML();
+		}	catch(UnknownHostException uhe) {
+				errors.setText("Unnable to connect to website, try again later");
+		}	catch(NoRouteToHostException nrthe) {
+			errors.setText("Unnable to connect to website, try again later");
+		}
 	}
-	private void loadEURvalues() throws 
-	UnknownHostException, NoRouteToHostException {
+	private synchronized void loadEURvalues() {
 		allValues.clear();
-		allValues.put("NBU", readURLoff.getCurrentXR(
-			"<a href=\"/currency/nbu/eur/", 
-			"<a href=\"/currency/nbu/rub/", 
-			"<td.*?>\\s*?(.*?)<"));
-		allValues.put("VTB Bank", readURLcom.getCurrentXR(
-			"<td>ВТБ Банк</td>", "</tr>",
-			"<td>ВТБ Банк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("OTP Bank", readURLcom.getCurrentXR(
-			"<td>OTP Bank</td>", "</tr>",
-			"<td>OTP Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("Prominvestbank", readURLcom.getCurrentXR(
-			"<td>Проминвестбанк</td>", "</tr>",
-			"<td>Проминвестбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
-			"<td>UniCredit Bank</td>", "</tr>",
-			"<td>UniCredit Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("PrivatBank", readURLcom.getCurrentXR(
-			"<td>Приватбанк</td>", "</tr>",
-			"<td>Приватбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		allValues.put("Oschadbank", readURLcom.getCurrentXR(
-			"<td>Ощадбанк</td>", "</tr>",
-			"<td>Ощадбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
-		readURLcom.releaseHTML();
-		readURLoff.releaseHTML();
+		try {
+			allValues.put("NBU", readURLoff.getCurrentXR(
+				"<a href=\"/currency/nbu/eur/", 
+				"<a href=\"/currency/nbu/rub/", 
+				"<td.*?>\\s*?(.*?)<"));
+			allValues.put("VTB Bank", readURLcom.getCurrentXR(
+				"<td>ВТБ Банк</td>", "</tr>",
+				"<td>ВТБ Банк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("OTP Bank", readURLcom.getCurrentXR(
+				"<td>OTP Bank</td>", "</tr>",
+				"<td>OTP Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("Prominvestbank", readURLcom.getCurrentXR(
+				"<td>Проминвестбанк</td>", "</tr>",
+				"<td>Проминвестбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
+				"<td>UniCredit Bank</td>", "</tr>",
+				"<td>UniCredit Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("PrivatBank", readURLcom.getCurrentXR(
+				"<td>Приватбанк</td>", "</tr>",
+				"<td>Приватбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			allValues.put("Oschadbank", readURLcom.getCurrentXR(
+				"<td>Ощадбанк</td>", "</tr>",
+				"<td>Ощадбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+			display();
+			readURLcom.releaseHTML();
+			readURLoff.releaseHTML();
+		}	catch(UnknownHostException uhe) {
+				errors.setText("Unnable to connect to website, try again later");
+		}	catch(NoRouteToHostException nrthe) {
+			errors.setText("Unnable to connect to website, try again later");
+		}
 	}
-	private void loadPLNvalues() throws 
-	UnknownHostException, NoRouteToHostException {
+	private synchronized void loadPLNvalues() {
 		allValues.clear();
-		allValues.put("NBU", readURLoff.getCurrentXR(
-			"<a href=\"/currency/nbu/pln/",
-			"<a href=\"/currency/nbu/chf/",
-			"<td.*?>\\s*?(.*?)<"));
-		allValues.put("VTB Bank", readURLcom.getCurrentXR(
-			"</span>ВТБ Банк</a>", "</tr>",
-			"</span>ВТБ Банк</a>.*?>.*?>(.*?)</td>.*?</td>.*?>(.*?)</td>"));
-		allValues.put("OTP Bank", new String[] { "---", "---" });
-		allValues.put("Prominvestbank", new String[] { "---", "---" });
-		allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
-			"</span>UniCredit Bank</a>", "</tr>",
-			"</span>UniCredit Bank</a>.*?>.*?>(.*?)</td>.*?</td>.*?>(.*?)</td>"));
-		allValues.put("PrivatBank", readURLcom.getCurrentXR(
-			"</span>ПриватБанк</a>", "</tr>",
-			"</span>ПриватБанк</a>.*?>.*?>(.*?)</td>.*?</td>.*?>(.*?)</td>"));
-		allValues.put("Oschadbank", new String[] { "---", "---" });
-		readURLcom.releaseHTML();
-		readURLoff.releaseHTML();
+		try {
+			allValues.put("NBU", readURLoff.getCurrentXR(
+				"<a href=\"/currency/nbu/pln/",
+				"<a href=\"/currency/nbu/chf/",
+				"<td.*?>\\s*?(.*?)<"));
+			allValues.put("VTB Bank", readURLcom.getCurrentXR(
+				"</span>ВТБ Банк</a>", "</tr>",
+				"</span>ВТБ Банк</a>.*?>.*?>(.*?)</td>.*?</td>.*?>(.*?)</td>"));
+			allValues.put("OTP Bank", new String[] { "---", "---" });
+			allValues.put("Prominvestbank", new String[] { "---", "---" });
+			allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
+				"</span>UniCredit Bank</a>", "</tr>",
+				"</span>UniCredit Bank</a>.*?>.*?>(.*?)</td>.*?</td>.*?>(.*?)</td>"));
+			allValues.put("PrivatBank", readURLcom.getCurrentXR(
+				"</span>ПриватБанк</a>", "</tr>",
+				"</span>ПриватБанк</a>.*?>.*?>(.*?)</td>.*?</td>.*?>(.*?)</td>"));
+			allValues.put("Oschadbank", new String[] { "---", "---" });
+			display();
+			readURLcom.releaseHTML();
+			readURLoff.releaseHTML();
+		}	catch(UnknownHostException uhe) {
+				errors.setText("Unnable to connect to website, try again later");
+		}	catch(NoRouteToHostException nrthe) {
+			errors.setText("Unnable to connect to website, try again later");
+		}
 	}
 	@SuppressWarnings("unchecked")
 	public EXwindow() {
