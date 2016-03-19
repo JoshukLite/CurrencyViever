@@ -1,6 +1,7 @@
 package currency.viever;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.plaf.basic.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
@@ -23,24 +24,26 @@ public class EXwindow {
 	private ReadURL readURLoff = new ReadURL("http://minfin.com.ua/currency/nbu/");
 
 	private JFrame window = new JFrame();
-	private JButton refresh = new JButton("Refresh");
-	private JButton toUAHButton = new JButton("To UAH");
-	private JButton toCurrButton = new JButton("Convert");
-	private JTextField offCur = new JTextField();
-	private JTextField vtbBuy = new JTextField();
-	private JTextField vtbSell = new JTextField();
-	private JTextField otpBuy = new JTextField();
-	private JTextField otpSell = new JTextField();
-	private JTextField promBuy = new JTextField();
-	private JTextField promSell = new JTextField();
-	private JTextField uniBuy = new JTextField();
-	private JTextField uniSell = new JTextField();
-	private JTextField priBuy = new JTextField();
-	private JTextField priSell = new JTextField();
-	private JTextField oscBuy = new JTextField();
-	private JTextField oscSell = new JTextField();
-	private JTextField setMoney = new JTextField(8);
-	private JTextField getMoney = new JTextField(8);
+	private JButton 
+		refresh = new JButton("Refresh"),
+		toUAHButton = new JButton("To UAH"),
+		toCurrButton = new JButton("Convert");
+	private JTextField 
+		offCur = new JTextField(),
+		vtbBuy = new JTextField(),
+		vtbSell = new JTextField(),
+		otpBuy = new JTextField(),
+		otpSell = new JTextField(),
+		promBuy = new JTextField(),
+		promSell = new JTextField(),
+		uniBuy = new JTextField(),
+		uniSell = new JTextField(),
+		priBuy = new JTextField(),
+		priSell = new JTextField(),
+		oscBuy = new JTextField(),
+		oscSell = new JTextField(),
+		setMoney = new JTextField(8),
+		getMoney = new JTextField(8);
 	private JComboBox<String> currencyBox = new JComboBox<String>(currencyNames);
 	private JComboBox<String> banksBox = new JComboBox<String>(bankNames);
 	private JLabel errors = new JLabel();
@@ -61,20 +64,22 @@ public class EXwindow {
 			g.fillRect(0, 0, getWidth(), getHeight());
 		}
 	};
-	private JPanel choseCurr = new JPanel(new GridLayout(0, 3));
-	private JPanel paneOff = new JPanel(new GridLayout(0, 2));
-	private JPanel paneCom = new JPanel(new GridLayout(0, 5));
-	private JPanel converter = new JPanel(new FlowLayout());
-	private JLabel labelCurr = new JLabel("Chose currency", JLabel.CENTER);
-	private JLabel labelOff = new JLabel("Official", JLabel.CENTER);
-	private JLabel labelVtb = new JLabel("VTB Bank", JLabel.CENTER);
-	private JLabel labelOtp = new JLabel("OTP Bank", JLabel.CENTER);
-	private JLabel labelProm = new JLabel("Prominvestbank", JLabel.CENTER);
-	private JLabel labelUni = new JLabel("UniCredit Bank", JLabel.CENTER);
-	private JLabel labelPri = new JLabel("PrivatBank", JLabel.CENTER);
-	private JLabel labelOsc = new JLabel("Oschadbank", JLabel.CENTER);
-	private JLabel labelConvType = new JLabel("Type here", JLabel.RIGHT);
-	private JLabel labelConvGet = new JLabel("Get equivalent", JLabel.RIGHT);
+	private JPanel 
+		choseCurr = new JPanel(new GridLayout(1, 3)),
+		paneOff = new JPanel(new GridLayout(1, 2)),
+		paneCom = new JPanel(new GridLayout(6, 5)),
+		converter = new JPanel(new FlowLayout());
+	private JLabel 
+		labelCurr = new JLabel("Chose currency", JLabel.CENTER),
+		labelOff = new JLabel("Official", JLabel.CENTER),
+		labelVtb = new JLabel("VTB Bank", JLabel.CENTER),
+		labelOtp = new JLabel("OTP Bank", JLabel.CENTER),
+		labelProm = new JLabel("Prominvestbank", JLabel.CENTER),
+		labelUni = new JLabel("UniCredit Bank", JLabel.CENTER),
+		labelPri = new JLabel("PrivatBank", JLabel.CENTER),
+		labelOsc = new JLabel("Oschadbank", JLabel.CENTER),
+		labelConvType = new JLabel("Type here", JLabel.RIGHT),
+		labelConvGet = new JLabel("Get equivalent", JLabel.RIGHT);
 	//
 	// Creating ActionListeners for components:
 	//
@@ -287,6 +292,7 @@ public class EXwindow {
 		readURLcom.releaseHTML();
 		readURLoff.releaseHTML();
 	}
+	@SuppressWarnings("unchecked")
 	public EXwindow() {
 		window.setTitle("Currency Viever");
 		mainPane.setPreferredSize(new Dimension(600, 525));
@@ -353,7 +359,7 @@ public class EXwindow {
 		// Adding Components to panels:
 		choseCurr.add(labelCurr);
 		// Setting first element to "Chose bank"
-		currencyBox.setRenderer(new MyComboBoxRender<String>("Chose"));
+		currencyBox.setRenderer(new PromptComboBoxRenderer("Chose"));
 		currencyBox.setSelectedIndex(-1);
 		choseCurr.add(currencyBox);
 		choseCurr.add(refresh);
@@ -400,7 +406,7 @@ public class EXwindow {
 		converter.add(labelConvGet);
 		converter.add(getMoney);
 		// Setting first element to "Chose bank"
-		banksBox.setRenderer(new MyComboBoxRender<String>("Chose bank"));
+		banksBox.setRenderer(new PromptComboBoxRenderer("Chose bank"));
 		banksBox.setSelectedIndex(-1);
 		converter.add(banksBox);
 		converter.add(toUAHButton);
@@ -427,19 +433,18 @@ public class EXwindow {
 	// Create class to set first element in JComboBox
 	// can't be choosen, it also dissapears when one of other
 	// elements will be chosen 
-	class MyComboBoxRender<T> extends JLabel implements ListCellRenderer<T> {
-		private String _title;
-		// Set name of the first element via constructor:
-		public MyComboBoxRender(String title) {
-			_title = title;
+	class PromptComboBoxRenderer extends BasicComboBoxRenderer {
+		private String prompt;
+		public PromptComboBoxRenderer(String prompt) {
+			this.prompt = prompt;
 		}
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
+		public Component getListCellRendererComponent(JList list, Object value, 
 			int index, boolean isSelected, boolean hasFocus) {
-			if(index == -1 && value == null) {
-				setText(_title);
-			}	else {
-				setText(value.toString());
+			super.getListCellRendererComponent(
+				list, value, index, isSelected, hasFocus);
+			if(value == null) {
+				setText(prompt);
 			}
 			return this;
 		}
