@@ -20,6 +20,7 @@
 
 	<target name="build" description="Compile source java files">
 		<mkdir dir="${build.dir}/classes"/>
+		<mkdir dir="doc"/>
 		<javac destdir="${build.dir}/classes" includeantruntime="false">
 			<src path="${src.dir}/main/java"/>
 		</javac>
@@ -36,6 +37,7 @@
 	
 	<target name="clean" description="Clean output directories">
 		<delete dir="${build.dir}"/>
+		<delete dir="doc"/>
 	</target>
 
 </project>
