@@ -1,6 +1,7 @@
 package currency.viever;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -17,6 +18,7 @@ public class EXwindow {
 	private String[] currencyNames = {
 		"USD", "EUR", "PLN"
 	};
+	private Color gradientColor = new Color(42, 0, 101);
 	// Stores all buyNsell prices of every bank
 	// Key = bank name, Value = array(first item - buy price,
 	// second item - sell price):
@@ -26,6 +28,9 @@ public class EXwindow {
 	private ReadURL readURLoff = new ReadURL("http://minfin.com.ua/currency/nbu/");
 
 	private JFrame window = new JFrame();
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu viev = new JMenu("Viev");
+	private JMenuItem background = new JMenuItem("Background");
 	private JButton 
 		refresh = new JButton("Refresh"),
 		toUAHButton = new JButton("To UAH"),
@@ -59,7 +64,7 @@ public class EXwindow {
 				getHeight());
 			final GradientPaint gp = new GradientPaint(
 				point1, new Color(255, 255, 255),
-				point2, new Color(42, 0, 101),
+				point2, gradientColor,
 				true);
 			final Graphics2D g2 = (Graphics2D)g;
 			g2.setPaint(gp);
@@ -126,6 +131,26 @@ public class EXwindow {
 						loadPLNvalues();
 					}
 				});
+			}
+		}
+	};
+	private ActionListener backgroundActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			gradientColor = JColorChooser.showDialog(
+				null, "Select background color", gradientColor);
+			mainPane.repaint();
+			// Saves color state on disk
+			try {
+				ObjectOutputStream ois = new ObjectOutputStream(
+					new FileOutputStream("doc/exterier.out"));
+				try {
+					ois.writeObject(gradientColor);
+				} finally {
+					ois.close();
+				}
+			}	catch(IOException ioe) {
+				throw new RuntimeException(ioe);
 			}
 		}
 	};
@@ -318,11 +343,37 @@ public class EXwindow {
 			errors.setText("Unnable to connect to website, try again later");
 		}
 	}
+	// Loads color for background from input stream
+	// and returns it
+	private Color loadColor() {
+		try {
+			ObjectInputStream ois = new ObjectInputStream(
+				new FileInputStream("doc/exterier.out"));
+			try {
+				return (Color)ois.readObject();
+			}	finally {
+				ois.close();
+			}
+		}	catch(ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}	catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	@SuppressWarnings("unchecked")
 	public EXwindow() {
+		// Creating folder to hold serializable objects:
+		File doc = new File("doc");
+		doc.mkdir();
+		// Checks for serialized color object
+		// if it, then loads it and set to background
+		File checkOut = new File("doc/exterier.out");
+		if(checkOut.exists()) {
+			gradientColor = loadColor();
+		}
+		// Setting size and borders for components:
 		window.setTitle("Currency Viever");
 		mainPane.setPreferredSize(new Dimension(600, 525));
-		window.add(BorderLayout.CENTER, mainPane);
 		choseCurr.setBorder(new TitledBorder("Currency"));
 		choseCurr.setPreferredSize(new Dimension(350, 50));
 		paneOff.setBorder(new TitledBorder("Official bank"));
@@ -364,6 +415,7 @@ public class EXwindow {
 		getMoney.setOpaque(false);
 		errors.setHorizontalAlignment(JLabel.CENTER);
 		// Adding Listeners to buttons
+		background.addActionListener(backgroundActionListener);
 		refresh.addActionListener(refreshActionListener);
 		currencyBox.addActionListener(currencyBoxActionListener);
 		toUAHButton.addActionListener(convertActionListener);
@@ -382,6 +434,10 @@ public class EXwindow {
 		labelConvGet.setFont(italic14);
 		errors.setFont(new Font("", Font.ITALIC + Font.BOLD, 18));
 		errors.setForeground(Color.WHITE);
+		// Adding menus to menubar:
+		menuBar.add(viev);
+		// Adding menuItems to menus:
+		viev.add(background);
 		// Adding Components to panels:
 		choseCurr.add(labelCurr);
 		// Setting first element to "Chose bank"
@@ -452,6 +508,8 @@ public class EXwindow {
 		// in the middle of the screen:
 		window.setBounds((screenSize.width - 600) / 2, (screenSize.height - 625) / 2, 
 			600, 625);
+		window.setJMenuBar(menuBar);
+		window.add(BorderLayout.CENTER, mainPane);
 		window.setVisible(true);
 		// Blocks resizing of window:
 		window.setResizable(false);
