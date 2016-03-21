@@ -1,5 +1,12 @@
 <?mxl version="1.0"?>
 <project name="viever" basedir="." default="build">
+	
+	<!--
+		Build created for Apache Ant
+		for information use command 'ant'
+		or 'ant -p' 
+	-->
+	
 	<property name="src.dir" value="src"/>
 	<property name="build.dir" value="build"/>
 	<property name="name" value="viever"/>
