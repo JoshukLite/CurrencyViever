@@ -1,5 +1,5 @@
 <?mxl version="1.0"?>
-<project name="viever" basedir="." default="build">
+<project name="viever" basedir="." default="usage">
 	
 	<!--
 		Build created for Apache Ant
