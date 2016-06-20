@@ -164,8 +164,12 @@ public class EXwindow {
 	private ActionListener backgroundActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			exterier.setGradientColor(JColorChooser.showDialog(
-				null, "Select background color", exterier.getGradientColor()));
+			Color backgroundColor = JColorChooser.showDialog(
+				null, "Select background color", exterier.getGradientColor());
+			if(backgroundColor == null) {
+				return;
+			}
+			exterier.setGradientColor(backgroundColor);
 			mainPane.repaint();
 			// Saves color state on disk
 			saveExterier();
