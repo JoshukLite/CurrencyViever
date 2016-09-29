@@ -455,22 +455,22 @@ public class EXwindow {
 				"<td.*?>\\s*?(.*?)<"));
 			allValues.put("VTB Bank", readURLcom.getCurrentXR(
 				"<td>ВТБ Банк</td>", "</tr>",
-				"<td>ВТБ Банк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>ВТБ Банк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("OTP Bank", readURLcom.getCurrentXR(
 				"<td>OTP Bank</td>", "</tr>",
-				"<td>OTP Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>OTP Bank</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("Prominvestbank", readURLcom.getCurrentXR(
 				"<td>Проминвестбанк</td>", "</tr>",
-				"<td>Проминвестбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>Проминвестбанк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
 				"<td>UniCredit Bank</td>", "</tr>",
-				"<td>UniCredit Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>UniCredit Bank</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("PrivatBank", readURLcom.getCurrentXR(
 				"<td>Приватбанк</td>", "</tr>",
-				"<td>Приватбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>Приватбанк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("Oschadbank", readURLcom.getCurrentXR(
 				"<td>Ощадбанк</td>", "</tr>",
-				"<td>Ощадбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>Ощадбанк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			display();
 			readURLcom.releaseHTML();
 			readURLoff.releaseHTML();
@@ -489,22 +489,22 @@ public class EXwindow {
 				"<td.*?>\\s*?(.*?)<"));
 			allValues.put("VTB Bank", readURLcom.getCurrentXR(
 				"<td>ВТБ Банк</td>", "</tr>",
-				"<td>ВТБ Банк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>ВТБ Банк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("OTP Bank", readURLcom.getCurrentXR(
 				"<td>OTP Bank</td>", "</tr>",
-				"<td>OTP Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>OTP Bank</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("Prominvestbank", readURLcom.getCurrentXR(
 				"<td>Проминвестбанк</td>", "</tr>",
-				"<td>Проминвестбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>Проминвестбанк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("UniCredit Bank", readURLcom.getCurrentXR(
 				"<td>UniCredit Bank</td>", "</tr>",
-				"<td>UniCredit Bank</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>UniCredit Bank</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("PrivatBank", readURLcom.getCurrentXR(
 				"<td>Приватбанк</td>", "</tr>",
-				"<td>Приватбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>Приватбанк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			allValues.put("Oschadbank", readURLcom.getCurrentXR(
 				"<td>Ощадбанк</td>", "</tr>",
-				"<td>Ощадбанк</td>.*?</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
+				"<td>Ощадбанк</td>.*?<td>(.*?)</td>.*?<td>(.*?)</td>"));
 			display();
 			readURLcom.releaseHTML();
 			readURLoff.releaseHTML();
