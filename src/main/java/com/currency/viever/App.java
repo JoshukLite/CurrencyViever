@@ -1,7 +1,7 @@
 package com.currency.viever;
 import javax.swing.SwingUtilities;
 
-public class Open {
+public class App {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
