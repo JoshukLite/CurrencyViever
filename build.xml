@@ -38,6 +38,7 @@
 		<jar destfile="${build.dir}/jar/Viever.jar" basedir="${build.dir}/classes" manifest="META-INF/Manifest.mf"/>
 	</target>
 
+	
 	<target name="run" depends="build" description="Run application">
 		<java fork="true" failonerror="yes" classpath="${build.dir}/classes/" classname="com.currency.viever.Open"/>
 	</target>
