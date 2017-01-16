@@ -1,4 +1,4 @@
-package currency.viever;
+package com.currency.viever;
 import javax.swing.SwingUtilities;
 
 public class Open {
