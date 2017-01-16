@@ -39,7 +39,7 @@
 	</target>
 
 	<target name="run" depends="build" description="Run application">
-		<java fork="true" failonerror="yes" classpath="${build.dir}/classes/" classname="currency.viever.Open"/>
+		<java fork="true" failonerror="yes" classpath="${build.dir}/classes/" classname="com.currency.viever.Open"/>
 	</target>
 	
 	<target name="clean" description="Clean output directories">
