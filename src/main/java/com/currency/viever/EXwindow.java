@@ -1,4 +1,4 @@
-package currency.viever;
+package com.currency.viever;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
