@@ -9,7 +9,7 @@
 	
 	<property name="src.dir" value="src"/>
 	<property name="build.dir" value="build"/>
-	<property name="name" value="viever"/>
+	<property name="name" value="viewer"/>
 
 	<target name="usage">
 		<echo message=""/>
@@ -39,7 +39,7 @@
 	</target>
 
 	<target name="run" depends="build" description="Run application">
-		<java fork="true" failonerror="yes" classpath="${build.dir}/classes/" classname="com.currency.viever.App"/>
+		<java fork="true" failonerror="yes" classpath="${build.dir}/classes/" classname="com.currency.viewer.App"/>
 	</target>
 	
 	<target name="clean" description="Clean output directories">
