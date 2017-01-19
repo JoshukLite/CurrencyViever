@@ -4,6 +4,8 @@ import java.net.*;
 import java.util.regex.*;
 import java.util.*;
 
+import org.jsoup.*;
+
 class ReadURL {
 	private String destUrl;
 	// Holds loaded HTML code in ArrayList:
