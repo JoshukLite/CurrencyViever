@@ -1,4 +1,4 @@
-package com.currency.viever;
+package com.currency.viewer;
 import javax.swing.SwingUtilities;
 
 public class App {
